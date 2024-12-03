@@ -1,0 +1,851 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Social Media",
+      "description": "Basic implementation of a social media interface",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000"
+      }
+    ],
+    "components":{
+        "securitySchemes": {
+                "JWT": {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "jwtToken"
+            }
+        }
+    }
+    ,
+    "paths": {
+        "/socialmedia/api/user/get-all-details":{
+            "get":{
+                "tags":["user"],
+                "summary": "get all user details",
+                "description": "get details of all users",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "400":{
+                        "description":"users not found"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/user/get-details/{userId}":{
+            "get":{
+                "tags":["user"],
+                "summary": "get user details by id",
+                "description": "get a specific post based on the post id",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                    "in":"path",
+                    "name":"id",
+                    
+                    "required":true,
+                    "schema":{
+                        "type" : "integer",
+                        "format": "int64",
+                        "minimum": 1
+                    }
+                }],
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "400":{
+                        "description":"No posts yet"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/user/register":{
+            "post":{
+                "tags":["user"],
+                "summary": "Sign up a new user",
+                "description": "Create a new user with the provided credentials",
+                "requestBody":{
+                    "required":true,
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "name":{
+                                        "type":"string"
+                                    },
+                                    "email":{
+                                        "type":"string"
+                                    },
+                                    "password":{
+                                        "type":"string"
+                                    },
+                                    "age":{
+                                        "type":"integer"
+                                    },
+                                    "mobile":{
+                                        "type":"string"
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                },
+                "responses":{
+                    "200":{
+                        "description":"user registration successful"
+                    },
+                    "400":{
+                        "description":"Invalid data"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/user/login":{
+            "post":{
+                "tags":["user"],
+                "summary": "Signin a user",
+                "description": "Authanticate a user based on the credentials provided",
+                "requestBody":{
+                    "required":true,
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "email":{
+                                        "type":"string"
+                                    },
+                                    "password":{
+                                        "type":"string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                },
+                "responses":{
+                    "200":{
+                        "description":"user login successful"
+                    },
+                    "400":{
+                        "description":"Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/user/logout": {
+            "post": {
+                "tags": ["user"],
+                "summary": "Logout a user",
+                "description": "Logs out a user and invalidates their JWT token",
+                "security": {
+                "JWT": {"scheme": "JWT"}
+                },
+                "responses": {
+                "200": {
+                    "description": "User logged out successfully"
+                },
+                "401": {
+                    "description": "Invalid or missing JWT token"
+                }
+                }
+            }
+        },
+        "/socialmedia/api/user/update-details":{
+            "put":{
+                "tags":["user"],
+                "summary": "Update user details",
+                "description": "update userName, email, mobile, age",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "requestBody":{
+                    "required":true,
+                    "content":{
+                        "multipart/form-data":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "name":{
+                                        "type":"string"
+                                    },
+                                    "email":{
+                                        "type":"string"
+                                    },
+                                    "age":{
+                                        "type":"integer"
+                                    },
+                                    "mobile":{
+                                        "type":"string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                },
+                "responses":{
+                    "200":{
+                        "description":"user updated"
+                    },
+                    "400":{
+                        "description":"user not found"
+                    },
+                    "401":{
+                        "description":"Inalid user details"
+                    }
+                }
+            }
+        },
+        
+        
+        
+        "/socialmedia/api/post/":{
+            "get":{
+                "tags":["posts"],
+                "summary": "get posts of the user",
+                "description": "get post of the logged in user",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "400":{
+                        "description":"Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/post/{id}":{
+            "get":{
+                "tags":["posts"],
+                "summary": "get post details by id",
+                "description": "get a specific post based on the post id",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                    "in":"path",
+                    "name":"id",
+                    
+                    "required":true,
+                    "schema":{
+                        "type" : "string",
+                        "format": "objectId"
+                    }
+                }],
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "400":{
+                        "description":"No posts yet"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/post/all":{
+            "get":{
+                "tags":["posts"],
+                "summary": "get all posts details",
+                "description": "get details of all posts",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "400":{
+                        "description":"posts not found"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/post/create":{
+            "post":{
+                "tags":["posts"],
+                "summary": "create a post",
+                "description": "creates apost based on the user credentials",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "requestBody":{
+                    "required":true,
+                    "content":{
+                        "multipart/form-data":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "caption":{
+                                        "type":"string"
+                                    },
+                                    "image":{
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post created successfully"
+                    },
+                    "400": {
+                        "description": "Post not created"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/post/update/{postId}":{
+            "put":{
+                "tags":["posts"],
+                "summary": "update a post",
+                "description": "update a post based on post id",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                    "in":"path",
+                    "name":"postId",
+                    
+                    "required":true,
+                    "schema":{
+                         "type" : "string",
+                        "format": "objectId"
+                    }
+                }],
+                "requestBody":{
+                    "content":{
+                        "multipart/form-data":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "caption":{
+                                        "required":"true",
+                                        "type":"string"
+                                    },
+                                    "image":{
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                },
+                "responses": {
+                    "200": {
+                        "description": "post updated"
+                    },
+                    "400": {
+                        "description": "You are not the owner of this post"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/post/delete/{postId}":{
+            "delete":{
+                "tags":["posts"],
+                "summary": "delete a post",
+                "description": "delete a post based on post id",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                    "in":"path",
+                    "name":"postId",
+                    
+                    "required":true,
+                    "schema":{
+                         "type" : "string",
+                        "format": "objectId"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "post deleted"
+                    },
+                    "400": {
+                        "description": "You are not the owner of this post"
+                    }
+                }
+            }
+        },
+        
+        "/socialmedia/api/comment/get-details/{postId}":{
+            "get":{
+                "tags":["comment"],
+                "summary": "get comment on post",
+                "description": "get a comments on a post with postId",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                    "in":"path",
+                    "name":"postId",
+                    
+                    "required":true,
+                    "schema":{
+                        "type": "string",
+                        "pattern": "^[0-9a-fA-F]{24}$"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    },
+                    "400": {
+                        "description": "no comments yet"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/comment/{postId}":{
+            "post":{
+                "tags":["comment"],
+                "summary": "post a comment",
+                "description": "post a comment on a post with id",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                    "in":"path",
+                    "name":"postId",
+                    
+                    "required":true,
+                    "schema":{
+                        "type": "string",
+                        "pattern": "^[0-9a-fA-F]{24}$"
+                    }
+                }],
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "comment":{
+                                        "required":"true",
+                                        "type":"string"
+                                    } 
+                                }
+                            }
+                        }
+                    }
+
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    },
+                    "400": {
+                        "description": "no comment provided"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/comment/update/{commentId}":{
+            "put":{
+                "tags":["comment"],
+                "summary": "update a comment",
+                "description": "update a comment on a post with id",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                    "in":"path",
+                    "name":"commentId",
+                    
+                    "required":true,
+                    "schema":{
+                       "type": "string",
+                        "pattern": "^[0-9a-fA-F]{24}$"
+                    }
+                }],
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "comment":{
+                                        "required":"true",
+                                        "type":"string"
+                                    } 
+                                }
+                            }
+                        }
+                    }
+
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    },
+                    "400": {
+                        "description": "no comment provided"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/comment/delete/{commentId}":{
+            "delete":{
+                "tags":["comment"],
+                "summary": "delete a comment",
+                "description": "delete a comment on a post with id",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                    "in":"path",
+                    "name":"commentId",
+                    
+                    "required":true,
+                    "schema":{
+                         "type": "string",
+                        "pattern": "^[0-9a-fA-F]{24}$"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "You cant delete this comment"
+                    },
+                    "400": {
+                        "description": "comment not found"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/like/toggle/{id}":{
+            "get":{
+                "tags":["likes"],
+                "summary": "toggle like",
+                "description": "toggles like to dislike and vice versa",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                    "in":"path",
+                    "name":"id",
+                    
+                    "required":true,
+                    "schema":{
+                        "type": "string",
+                        "pattern": "^[0-9a-fA-F]{24}$"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "could not perform operation"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/like/{id}":{
+            "get":{
+                "tags":["likes"],
+                "summary": "get likes on post",
+                "description": "gets the users who have liked the post",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                    "in":"path",
+                    "name":"id",
+                    
+                    "required":true,
+                    "schema":{
+                         "type" : "string",
+                        "format": "objectId"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "could not perform operation"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/friend/get-pending":{
+            "get":{
+                "tags":["Friends"],
+                "summary": "get pending requests of user",
+                "description": "get pending requests of user",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "responses":{
+                    "200":{
+                        "description":"OK"
+                    },
+                    "400":{
+                        "description":"user not found"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/friend/get-friends/{id}":{
+            "get":{
+                "tags":["Friends"],
+                "summary": "get friends of the user",
+                "description": "get all the friends from the user friend list",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                    "in":"path",
+                    "name":"id",
+                    
+                    "required":true,
+                    "schema":{
+                        "type" : "string",
+                        "format": "objectId"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400":{
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "could not perform operation"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/friend/toggle/{id}":{
+            "get":{
+                "tags":["Friends"],
+                "summary": "toggle friendship",
+                "description": "unfriend a friend from the user list",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                    "in":"path",
+                    "name":"id",
+                    
+                    "required":true,
+                    "schema":{
+                         "type" : "string",
+                        "format": "objectId"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400":{
+                        "description":"Friend not found"
+                    },
+                    "500": {
+                        "description": "could not perform operation"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/friend/{id}":{
+            "post":{
+                "tags":["Friends"],
+                "summary": "Respond to friend request",
+                "description": "Accept or reject a friend request",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                    "in":"path",
+                    "name":"id",
+                    
+                    "required":true,
+                    "schema":{
+                        "type" : "string",
+                        "format": "objectId"
+                    }
+                },
+                    {
+                    "in": "query",
+                    "name": "response",
+                    "required": true,
+                    "schema": {
+                    "type": "string",
+                    "enum": ["accept", "reject"]
+                    },
+                    "description": "Response to the friend request (accept or reject)"
+                } 
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    },
+                    "400": {
+                        "description": "friend request does not exist"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/friend/req/{id}":{
+            "post":{
+                "tags":["Friends"],
+                "summary": "send friend request",
+                "description": "send a friend request to user",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "parameters":[{
+                        "in":"path",
+                        "name":"id",
+                        
+                        "required":true,
+                        "schema":{
+                             "type" : "string",
+                        "format": "objectId"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    },
+                    "400": {
+                        "description": "user not found"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/otp/send":{
+            "get":{
+                "tags":["OTP"],
+                "summary": "send a OTP",
+                "description": "sends a six digit otp to the logged in user registered email",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "responses": {
+                    "200": {
+                        "description": "otp sent successfully"
+                    },
+                    "400": {
+                        "description": "user not found"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/otp/verify":{
+            "post":{
+                "tags":["OTP"],
+                "summary": "verification of otp",
+                "description": "verifies the otp with email and otp",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "requestBody":{
+                    "required":true,
+                    "content":{
+                        "multipart/form-data":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "email":{
+                                        "type":"string"
+                                    },
+                                    "otp":{
+                                        "type": "integer"
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP verification successfull"
+                    },
+                    "400": {
+                        "description": "OTP verification unsuccessfull"
+                    }
+                }
+            }
+        },
+        "/socialmedia/api/otp/reset-password":{
+            "post":{
+                "tags":["OTP"],
+                "summary": "reset the password",
+                "description": "reset the password if otp verification is successful",
+                "security":{
+                    "JWT":{"scheme": "JWT"}
+                },
+                "requestBody":{
+                    "required":true,
+                    "content":{
+                        "multipart/form-data":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "newpassword":{
+                                        "type":"string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password reset successfully"
+                    },
+                    "400": {
+                        "description": "Please verify your OTP firs"
+                    }
+                }
+            }
+        }
+    }
+}
